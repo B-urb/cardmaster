@@ -1,0 +1,9 @@
+PATCH /closeGame
+Content-Type: application/json
+
+{
+  "id": {{$uuid}},
+  "price": {{$randomInt}},
+  "ts": {{$timestamp}},
+  "value": "content"
+}

@@ -1,0 +1,20 @@
+POST http://localhost:8080/group/join
+Content-Type: application/json
+
+{
+  "id": {{$uuid}},
+  "price": {{$randomInt}},
+  "ts": {{$timestamp}},
+  "value": "content"
+}
+
+###
+POST localhost:8080/game/create
+Content-Type: application/json
+
+{
+  "id": {{$uuid}},
+  "price": {{$randomInt}},
+  "ts": {{$timestamp}},
+  "value": "content"
+}
