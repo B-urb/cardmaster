@@ -2,15 +2,13 @@ package com.cardmaster.service
 
 import com.cardmaster.model.Game
 import com.cardmaster.model.GameSession
-import com.cardmaster.model.Player
 import com.cardmaster.model.PlayerGroup
 import com.cardmaster.model.PlaysIn
+import com.cardmaster.model.User
 import com.cardmaster.plugins.SurrealDatabase
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.lang.IllegalStateException
 import java.time.LocalDateTime
-import java.util.*
 
 class CardMasterService : KoinComponent {
 
@@ -19,25 +17,25 @@ class CardMasterService : KoinComponent {
 
     }
 
-    fun getPlayers() {
+    fun listUsers() {
 
+    }
+
+    fun getPlayer(id: String): User? {
+        return dbClient.driver.select(id, User::class.java).first() ?: throw IllegalStateException("User not found")
     }
 
     fun getGames(): List<Game> {
-        val games = dbClient.driver.select("game:", Game::class.java)
+        val games = dbClient.driver.select("game", Game::class.java).toList()
         return games
     }
 
-    fun getSession() {
-
+    fun getSessions(): List<GameSession> {
+        val session = dbClient.driver.select("session:", GameSession::class.java)
+        return session
     }
 
     fun createGame(game: Game): Game {
-        val player = Player(UUID.randomUUID().toString(), "Test", "User")
-        val points = mapOf(player.id.toString() to 0)
-        val fines = mapOf(player.id.toString() to 0)
-        val game =
-            Game(id = null, points = points, fines = fines, isBock = false, isSolo = false, LocalDateTime.now(), null)
         val createdGame = dbClient.driver.create("game:uuid()", game)
         return createdGame
     }
@@ -49,16 +47,16 @@ class CardMasterService : KoinComponent {
 
     }
 
-    fun createPlayer(player: Player): Player? {
+    fun createPlayer(player: User): User? {
         //TODO: Sanitize input
         return dbClient.driver.create("player:uuid()", player)
     }
 
-    fun createGroup(group: PlayerGroup): PlayerGroup? {
+    fun createGroup(group: PlayerGroup): PlayerGroup {
         return dbClient.driver.create("group:uuid()", group)
     }
 
-    fun joinPlayerToGroup(playerId: String, groupId: String, relation: PlaysIn): PlaysIn {
+    fun jointUserToGroup(playerId: String, groupId: String, relation: PlaysIn): PlaysIn {
 
         //TODO: Sanitize input
         //FIXME: Use Relationship when api is available

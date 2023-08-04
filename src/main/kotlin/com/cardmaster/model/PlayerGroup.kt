@@ -1,5 +1,11 @@
 package com.cardmaster.model
 
-import java.util.UUID
+import kotlinx.serialization.Serializable
 
-data class PlayerGroup(val id: String, val players: Set<String>? = null, val admin: Set<String>? = null)
+@Serializable
+data class PlayerGroup(
+    val id: String?,
+    val name: String,
+    val players: Set<String>? = null,
+    val admin: Set<String>? = null
+)

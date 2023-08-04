@@ -1,14 +1,18 @@
 package com.cardmaster.model
 
-import java.time.LocalDate
+import com.cardmaster.util.DateSerializer
+import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
-import java.util.UUID
 
+@Serializable
 data class GameSession(
-    private val id: UUID,
-    private val date: LocalDate,
+    private val id: String?,
     private val games: Set<Game>,
-    private val players: Set<Player>,
+    private val players: Set<User>,
+
+    @Serializable(with = DateSerializer::class)
     private val startedAt: LocalDateTime,
+
+    @Serializable(with = DateSerializer::class)
     private val endedAt: LocalDateTime?
 )

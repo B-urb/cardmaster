@@ -1,15 +1,15 @@
 package com.cardmaster
 
-import com.cardmaster.modules.surrealDBClient
-import com.cardmaster.plugins.*
-import com.surrealdb.driver.SyncSurrealDriver
-import io.ktor.server.application.*
+import com.cardmaster.plugins.configureCORS
+import com.cardmaster.plugins.configureInjection
+import com.cardmaster.plugins.configureMonitoring
+import com.cardmaster.plugins.configureRouting
+import com.cardmaster.plugins.configureSecurity
+import com.cardmaster.plugins.configureSerialization
+import com.cardmaster.plugins.configureTemplating
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import org.koin.java.KoinJavaComponent.inject
-import org.koin.ktor.ext.inject
-import org.koin.ktor.plugin.Koin
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
@@ -26,6 +26,7 @@ fun Application.module() {
     configureSecurity()
     configureMonitoring()
     configureSerialization()
+    configureCORS()
     configureTemplating()
     configureRouting()
 
