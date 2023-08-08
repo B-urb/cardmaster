@@ -4,6 +4,7 @@ type map = {
 
 interface Game {
   id: string
+  players: Array<User>
   points: object
   fines: object
 }
@@ -19,6 +20,7 @@ interface User {
 
 interface Group {
   id: string
+  name: string
   players: Object
 
 }

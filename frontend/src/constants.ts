@@ -1,11 +1,14 @@
 import axios from "axios";
 
 export const CREATE_GAME = "/game/create"
-export const GET_GAMES = "game/list"
-export const GET_SESSIONS = "/session/list"
+export const GET_GAMES = (id: string) => `game/${id}`
+
+export const GET_GROUPS = "group"
+export const GET_SESSIONS = (id: string) => `session/${id}`
 export const CREATE_SESSION = "session/create"
 
 export const CREATE_GROUP = "group/create"
+export const GET_GROUP_FOR_PLAYER = (id: string) => `group/${id}`
 
 export const JOIN_SESSION = "/session/join"
 
@@ -15,7 +18,7 @@ export const instance = axios.create({
   headers: {
     "Access-Control-Allow-Origin": "*",
     "Content-Type": "application/json",
-    "cardmaster-user": "0189ad89-33e0-7e7f-b041-f396d82453d5"
+    "cardmaster-user": "user:lhxwr5fi4p17z4ggtpy0"
   }
 });
 

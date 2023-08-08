@@ -1,24 +1,21 @@
-import {Icon, Label, List, ListItem, Menu, Table} from "semantic-ui-react";
+import {Container, Icon, Label, List, ListItem, Menu, Table} from "semantic-ui-react";
 import {useQuery} from "react-query";
 import {GET_GAMES, instance} from "./constants.ts";
 
-async function getGames(): Promise<Game[]> {
-  return instance.get(GET_GAMES).then((response) => response.data)
+async function getGames(sessionId: string): Promise<Game[]> {
+  return instance.get(GET_GAMES(sessionId)).then((response) => response.data)
 }
-const GameOverview = () => {
-  // Queries
-  const {status, data, error} = useQuery<Game[], Error>("Groups", getGames)
 
-  switch (status) {
-    case "idle":
-      return <div>idle</div>;
-    case 'loading':
-      return <span>Loading...</span>
-    case 'error':
-      return <span>Error: {error.message}</span>
-    case "success":
-      return data != undefined ?
-          <Table celled>
+const GameOverview = (props: { id: string }) => {
+  // Queries
+  const {status, data, error} = useQuery<Game[], Error>(["Games", props.id], () => getGames(props.id))
+
+  return <Container>
+    {status === 'idle' && <div>idle</div>}
+    {status === 'loading' && <span>Loading...</span>}
+    {status === 'error' && <span>Error: {error?.message}</span>}
+    {status === 'success' && data && Object.keys(data).length > 0 && (
+        <Table celled>
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>Header</Table.HeaderCell>
@@ -63,8 +60,9 @@ const GameOverview = () => {
                 </Table.HeaderCell>
               </Table.Row>
             </Table.Footer>
-          </Table> : <div>No Content</div>
+        </Table>)
   }
+  </Container>
 }
 
 
