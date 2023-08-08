@@ -34,6 +34,7 @@ fun Any?.toJsonElement(): JsonElement = when (this) {
     is Number -> JsonPrimitive(this)
     is Boolean -> JsonPrimitive(this)
     is String -> JsonPrimitive(this)
+    is Set<*> -> JsonArray(map { it.toJsonElement() })
     is Array<*> -> JsonArray(map { it.toJsonElement() })
     is List<*> -> JsonArray(map { it.toJsonElement() })
     is Map<*, *> -> JsonObject(map { it.key.toString() to it.value.toJsonElement() }.toMap())

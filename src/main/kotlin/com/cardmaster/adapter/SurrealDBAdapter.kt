@@ -13,7 +13,9 @@ class SurrealDBAdapter<T> {
 
     }
 
+
     fun relate(relation: T, input: T, out: T) {
 
     }
 }
+

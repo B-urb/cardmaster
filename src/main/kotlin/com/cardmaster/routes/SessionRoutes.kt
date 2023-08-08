@@ -1,42 +1,47 @@
 package com.cardmaster.routes
 
 import com.cardmaster.model.GameSession
-import com.cardmaster.model.PlayerGroup
-import com.cardmaster.model.User
+import com.cardmaster.model.IdParams
 import com.cardmaster.service.CardMasterService
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 import java.time.LocalDateTime
-import java.util.*
 
 
 fun Routing.sessionRoutes() {
     val cardMasterService by inject<CardMasterService>()
 
     route("session") {
+        get("{id}") {
+            if (call.parameters["id"] != null) {
+                call.respond(cardMasterService.getSessions(call.parameters["id"]!!))
+            }
+        }
         post("create") {
-            val header = call.request.header("user")
-            val group = call.receive<PlayerGroup>()
-            val players = (group.players?.map { User(it, "test", "test") }) ?: emptySet() //FIXME
+            val user = call.request.header("cardmaster-user")!!
+            val id = call.receive<IdParams>()
+
+            val players = cardMasterService.getUserOfGroup(id.id).map { it.id!! }.toSet()
 
             //Get Players that sit in the group
             val result = cardMasterService.createSession(
                 GameSession(
-                    UUID.randomUUID().toString(),
+                    "",
                     emptySet(),
-                    players.toSet(),
+                    players,
+                    id.id,
                     LocalDateTime.now(),
                     null
                 )
             )
-            call.respond(result)
+            call.respond(HttpStatusCode.Created, IdParams(result.id!!))
         }
         post("end") {}
         get("list") {
-            call.respond(cardMasterService.getSessions())
         }
     }
 }

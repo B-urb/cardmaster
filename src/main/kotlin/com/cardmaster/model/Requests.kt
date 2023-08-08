@@ -6,4 +6,8 @@ import kotlinx.serialization.Serializable
 data class GroupParams(val name: String)
 
 @Serializable
-data class GameParams(val id: String)
+data class IdParams(val id: String)
+
+
+@Serializable
+data class JoinParams(val playerId: String, val groupId: String)

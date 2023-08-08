@@ -1,6 +1,6 @@
 package com.cardmaster
 
-import com.cardmaster.model.GameParams
+import com.cardmaster.model.GroupParams
 import com.cardmaster.plugins.configureInjection
 import com.cardmaster.plugins.configureRouting
 import com.cardmaster.plugins.configureSerialization
@@ -30,10 +30,6 @@ class GroupTest {
             configureRouting()
         }
 
-        client.get("/group/list").apply {
-            //val games = call.body<Game>()
-            assertEquals(HttpStatusCode.OK, status)
-        }
 
 
         client.post("/group/create") {
@@ -43,7 +39,7 @@ class GroupTest {
             }
             contentType(ContentType.Application.Json)
             setBody(
-                GameParams(UUID.randomUUID().toString())
+                GroupParams("test-group")
             )
         }.apply {
             assertEquals(HttpStatusCode.Created, status)

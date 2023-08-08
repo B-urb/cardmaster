@@ -1,6 +1,6 @@
 package com.cardmaster
 
-import com.cardmaster.model.GameParams
+import com.cardmaster.model.IdParams
 import com.cardmaster.plugins.configureInjection
 import com.cardmaster.plugins.configureRouting
 import com.cardmaster.plugins.configureSerialization
@@ -46,7 +46,7 @@ class GameTest : KoinTest {
             }
             contentType(ContentType.Application.Json)
             setBody(
-                GameParams(UUID.randomUUID().toString())
+                IdParams(UUID.randomUUID().toString())
             )
         }.apply {
             assertEquals(HttpStatusCode.Created, status)

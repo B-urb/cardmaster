@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 data class PlayerGroup(
     val id: String?,
     val name: String,
-    val players: Set<String>? = null,
-    val admin: Set<String>? = null
+    val players: Set<String> = emptySet(),
+    val admins: Set<String> = emptySet()
 )

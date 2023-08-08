@@ -7,9 +7,10 @@ import java.time.LocalDateTime
 @Serializable
 data class Game(
      val id: String? = null,
-     val players: Set<String>?,
-     val points: Map<String, Int>? = null,
-     val fines: Map<String, Int>? = null,
+     val players: Set<String> = emptySet(),
+     val session: String,
+     val points: Map<String, Int> = emptyMap(),
+     val fines: Map<String, Int> = emptyMap(),
      val isBock: Boolean = false,
      val isSolo: Boolean = false,
      @Serializable(with = DateSerializer::class)

@@ -1,7 +1,7 @@
 package com.cardmaster.routes
 
 import com.cardmaster.model.Game
-import com.cardmaster.model.GameParams
+import com.cardmaster.model.IdParams
 import com.cardmaster.service.CardMasterService
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -17,17 +17,22 @@ fun Routing.gameRoutes() {
 
     route("game") {
         get("list") {
-            val games = cardMasterService.getGames()
-            call.respond(HttpStatusCode.OK, games)
+
+        }
+
+        get("{id}") {
+            if (call.parameters["id"] != null) {
+                call.respond(cardMasterService.getGames(call.parameters["id"]!!))
+            }
         }
 
         post("create") {
-            val id = call.receive<GameParams>()
+            val id = call.receive<IdParams>()
             val userId = call.request.header("cardmaster-user")!!
-            val game = Game(id.id, players = setOf(userId), startedAt = LocalDateTime.now())
+            //FIXME: use actual users
+            val game = Game("", session = id.id, players = setOf(userId), startedAt = LocalDateTime.now())
             val gameCreated = cardMasterService.createGame(game)
             call.respond(HttpStatusCode.Created, gameCreated)
-
         }
         patch("end") {
             val id = call.receiveText()

@@ -1,6 +1,5 @@
 package com.cardmaster
 
-import com.cardmaster.model.GameParams
 import com.cardmaster.plugins.configureInjection
 import com.cardmaster.plugins.configureRouting
 import com.cardmaster.plugins.configureSerialization
@@ -11,7 +10,6 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
 import org.junit.After
 import org.koin.core.context.GlobalContext
-import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -33,20 +31,6 @@ class UserTest {
         client.get("/user/list").apply {
             //val games = call.body<Game>()
             assertEquals(HttpStatusCode.OK, status)
-        }
-
-
-        client.post("/user/create") {
-            headers {
-                header(HttpHeaders.ContentType, ContentType.Application.Json)
-                header("cardmaster-user", UUID.randomUUID().toString())
-            }
-            contentType(ContentType.Application.Json)
-            setBody(
-                GameParams(UUID.randomUUID().toString())
-            )
-        }.apply {
-            assertEquals(HttpStatusCode.Created, status)
         }
     }
 

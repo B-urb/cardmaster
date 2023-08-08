@@ -7,6 +7,6 @@ import java.time.LocalDate
 @Serializable
 data class PlaysIn(
     @Serializable(with = DateSerializer::class)
-    val joinDate: LocalDate,
+    val joinDate: LocalDate = LocalDate.now(),
     val active: Boolean = false
 )

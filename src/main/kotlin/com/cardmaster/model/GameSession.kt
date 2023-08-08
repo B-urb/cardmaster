@@ -6,13 +6,14 @@ import java.time.LocalDateTime
 
 @Serializable
 data class GameSession(
-    private val id: String?,
-    private val games: Set<Game>,
-    private val players: Set<User>,
+    val id: String?,
+    val games: Set<String>,
+    val players: Set<String>,
+    val table: String,
 
     @Serializable(with = DateSerializer::class)
-    private val startedAt: LocalDateTime,
+    val startedAt: LocalDateTime,
 
     @Serializable(with = DateSerializer::class)
-    private val endedAt: LocalDateTime?
+    val endedAt: LocalDateTime?
 )
