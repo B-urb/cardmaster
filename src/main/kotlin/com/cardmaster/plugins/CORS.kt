@@ -20,6 +20,7 @@ fun Application.configureCORS() {
         allowHeader(HttpHeaders.AccessControlAllowOrigin)
         allowHeader(HttpHeaders.ContentType)
         allowHeadersPrefixed("cardmaster-") //FIXME: Remove and replace with token
+        allowCredentials = true
         anyHost()
     }
 }

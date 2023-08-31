@@ -1,5 +1,6 @@
 package com.cardmaster.plugins
 
+import com.cardmaster.model.UserSession
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.http.*
@@ -27,9 +28,8 @@ fun Application.configureSecurity() {
             client = HttpClient(Apache)
         }
     }
-    data class MySession(val count: Int = 0)
     install(Sessions) {
-        cookie<MySession>("MY_SESSION") {
+        cookie<UserSession>("card-session") {
             cookie.extensions["SameSite"] = "lax"
         }
     }
@@ -41,16 +41,13 @@ fun Application.configureSecurity() {
 
             get("/callback") {
                 val principal: OAuthAccessTokenResponse.OAuth2? = call.authentication.principal()
-                call.sessions.set(UserSession(principal?.accessToken.toString()))
+                call.sessions.set(UserOauthSession(principal?.accessToken.toString()))
                 call.respondRedirect("/hello")
             }
         }
         get("/session/increment") {
-            val session = call.sessions.get<MySession>() ?: MySession()
-            call.sessions.set(session.copy(count = session.count + 1))
-            call.respondText("Counter is ${session.count}. Refresh to increment.")
         }
     }
 }
 
-class UserSession(accessToken: String)
+class UserOauthSession(accessToken: String)
