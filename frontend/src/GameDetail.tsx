@@ -1,10 +1,16 @@
-import {Header, List, Segment} from "semantic-ui-react"
+import {Button, ButtonGroup, Header, Label, List, Segment} from "semantic-ui-react"
 
+const PointGroup = () => <ButtonGroup>
+  <Button icon={'minus'}/>
+  <Label>0</Label>
+  <Button icon={'plus'}/>
+</ButtonGroup>
 
-const GameDetail = () => {
+const GameDetail = (props: { players: Array<User> }) => {
 
   return <Segment>
     <Header as={"h2"}>Strafen</Header>
+
     <List></List>
   </Segment>
 }

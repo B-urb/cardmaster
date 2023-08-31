@@ -1,45 +1,46 @@
-import instance, {CREATE_GROUP, GET_GROUPS} from "./constants.ts";
-import {useQuery} from "react-query";
-import {Button, Container, Form, Header, List} from "semantic-ui-react";
+import {useMutation, useQuery, useQueryClient} from "react-query";
+import {Button, Form, Header, List, Segment} from "semantic-ui-react";
 import {useState} from "react";
-import {NavLink} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import {createGroup, getGroups} from "./api/api.tsx";
 
-
-async function getGroups(): Promise<Group[]> {
-  return await instance.get<Group[]>(GET_GROUPS).then((response) => response.data)
-}
-
-async function submitUser(name: string) {
-  return await instance.post(CREATE_GROUP, {"name": name})
-}
 
 const Groups = () => {
   const [name, setName] = useState("")
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   const {status, data, error} = useQuery<Group[], Error>("Groups", getGroups)
-
-  return <Container>
+  const mutation = useMutation(createGroup, {
+    // Optional: onSuccess callback if you want to perform any actions after successful mutation
+    onSuccess: () => {
+      // For example, you can invalidate and refetch something after a mutation
+      queryClient.invalidateQueries("Groups");
+      setName("")
+    },
+  })
+  return <Segment>
     <Header as='h2'>Meine Gruppen:</Header>
     {status === 'idle' && <div>idle</div>}
     {status === 'loading' && <span>Loading...</span>}
     {status === 'error' && <span>Error: {error?.message}</span>}
     {status === 'success' && data && Object.keys(data).length > 0 && (
-        <List inverted animated>
+        <List link animated>
           {data.map((group, id) => (
-              <List.Item key={id}>
-                <NavLink to={`/group/${group.id}`}>{group.name}</NavLink>
+              <List.Item as="a" onClick={() => navigate(`/group/${group.id}`)} key={id}>
+                {group.name}
               </List.Item>
           ))}
         </List>
     )}
     {status === 'success' && !data && <div>No Groups yet</div>}
     <Header as={"h3"}>Neue Gruppe anlegen:</Header>
-    <Form onSubmit={() => submitUser(name)}>
+    <Form onSubmit={() => mutation.mutate(name)}>
       <Form.Input label='Group Name' onChange={(e) => setName(e.target.value)} placeholder='Die frechen Lausbuben'
                   value={name}/>
       <Button>Create Group</Button>
     </Form>
-  </Container>
+  </Segment>
 }
 
 export default Groups

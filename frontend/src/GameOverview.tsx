@@ -1,42 +1,41 @@
-import {Container, Icon, Label, List, ListItem, Menu, Table} from "semantic-ui-react";
+import {Container, Header, Icon, Label, Menu, Table} from "semantic-ui-react";
 import {useQuery} from "react-query";
-import {GET_GAMES, instance} from "./constants.ts";
-
-async function getGames(sessionId: string): Promise<Game[]> {
-  return instance.get(GET_GAMES(sessionId)).then((response) => response.data)
-}
+import {useNavigate} from "react-router-dom";
+import {getGames, getUsersForSession} from "./api/api.tsx";
 
 const GameOverview = (props: { id: string }) => {
+
+  const navigate = useNavigate()
+
   // Queries
   const {status, data, error} = useQuery<Game[], Error>(["Games", props.id], () => getGames(props.id))
+  const userQuery = useQuery<User[]>(["Users", props.id], () => getUsersForSession(props.id))
 
   return <Container>
     {status === 'idle' && <div>idle</div>}
     {status === 'loading' && <span>Loading...</span>}
     {status === 'error' && <span>Error: {error?.message}</span>}
-    {status === 'success' && data && Object.keys(data).length > 0 && (
+    {status === 'success' && data && userQuery.data && Object.keys(data).length > 0 && (
         <Table celled>
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>Header</Table.HeaderCell>
-                <Table.HeaderCell>Header</Table.HeaderCell>
-                <Table.HeaderCell>Players</Table.HeaderCell>
+                <Table.HeaderCell>Players/Points</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
 
             <Table.Body>
               {data.map((game, id) =>
-                  <Table.Row key={id}>
+                  <Table.Row key={id} onClick={() => navigate(`game/${game.id}`)}>
                     <Table.Cell>
                       <Label ribbon>{id}</Label>
                     </Table.Cell>
-                    <Table.Cell><Label>
-
-                    </Label></Table.Cell>
-                    <Table.Cell><List>
-                      {Object.keys(game.points).map((key, id) =>
-                          <ListItem key={id}>{key}</ListItem>)}
-                    </List></Table.Cell>
+                    <Table.Cell>
+                      {<PlayerPointsTable points={game.points} users={userQuery.data.reduce((obj, user) => {
+                        return {...obj, [user.id]: user}
+                      }, {})}/>
+                      }
+                    </Table.Cell>
                   </Table.Row>
               )
               }
@@ -65,5 +64,34 @@ const GameOverview = (props: { id: string }) => {
   </Container>
 }
 
+const PlayerPointsTable = (props: { points: Record<string, number>, users: Record<string, User> }) => {
+  console.log(props.points)
+  console.log(props.users)
+  return <Table basic='very' celled collapsing>
+    <Table.Header>
+      <Table.Row>
+        <Table.HeaderCell>Spieler</Table.HeaderCell>
+        <Table.HeaderCell>Punkte</Table.HeaderCell>
+      </Table.Row>
+    </Table.Header>
+    <Table.Body>
+      {Object.keys(props.points).map((k, v) =>
+          <Table.Row key={v}>
+            <Table.Cell>
+              <Header as='h4' image>
+                <Header.Content>
+                  {props.users[k] ? props.users[k].username : "User not found"}
+                  <Header.Subheader>Human Resources</Header.Subheader>
+                </Header.Content>
+              </Header>
+            </Table.Cell>
+            <Table.Cell>
+              {props.points[k]}
+            </Table.Cell>
+          </Table.Row>
+      )}
+    </Table.Body>
+  </Table>
+}
 
 export default GameOverview

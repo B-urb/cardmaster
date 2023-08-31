@@ -5,6 +5,31 @@
   text-align: center;
 }
 
+
+body::before {
+  content: "";
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  opacity: 60%;
+  top: 10%; /* Adjust this value to move the pseudo-element (and thus the background image) down */
+  left: 25%;
+  z-index: -1;
+  background-image: url("assets/background.svg");
+  background-size: contain; /* Ensure the SVG fits inside the container without being cropped */
+  background-repeat: no-repeat;
+  background-position: center;
+  transform: rotate(40deg);
+}
+
+@media (max-width: 700px) {
+  body::before {
+    top: -10%
+  }
+}
+
+
+
 .logo {
   height: 6em;
   padding: 1.5em;
