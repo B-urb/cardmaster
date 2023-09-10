@@ -7,7 +7,7 @@ interface Game {
   id: string
   sessionId: string
   players: Array<string>
-  winnerTeam: Winner | null
+  winningTeam: Winner | null
   winners: Array<string>
   points: Record<string, number>;
   fines: Record<string, number>;

@@ -34,7 +34,7 @@ const GameCreate = () => {
   const initGame: Game = {
     id: "",
     sessionId: sessionId,
-    winnerTeam: null,
+    winningTeam: null,
     winners: [],
     players: initPlayers,
     points: createEmptyFromPlayers(initPlayers),
@@ -49,8 +49,8 @@ const GameCreate = () => {
       setGame({
         id: gameId,
         sessionId: data.sessionId,
-        winnerTeam: null,
-        winners: [],
+        winningTeam: data.winningTeam,
+        winners: data.winners,
         players: data.players,
         points: points,
         fines: fines,
@@ -77,7 +77,7 @@ const GameCreate = () => {
   const updatePoints = (delta: number) => {
 
     const newPoints = game.players.reduce((p, player) => {
-      return (player in game.winnerTeam) ? {...p, [player]: (game.points[player] + delta)} : {
+      return (game.winners.includes(player)) ? {...p, [player]: (game.points[player] + delta)} : {
         ...p,
         [player]: (game.points[player] - delta)
       }
@@ -106,21 +106,41 @@ const GameCreate = () => {
     setGame(game =>
         ({
           ...game,
-          winnerTeam: value
+          winningTeam: value
         }))
   }
 
-  const handleCheckboxChange = (id) => {
-    if (checkedBoxes.includes(id)) {
+  const handleCheckboxChange = (player) => {
+    if (game.winners.includes(player)) {
       // If the checkbox is already checked, uncheck it
-      setCheckedBoxes(checkedBoxes.filter(checkboxId => checkboxId !== id));
+      setGame(game =>
+          ({
+            ...game,
+            winners: game.winners.filter((elem) => elem !== player),
+            points: {
+              ...game.points,
+              [player]: -game.points[player]
+            }
+          }))
     } else {
-      if (checkedBoxes.length < 2) {
+      if (game.winners.length > 0) {
         // If less than two checkboxes are checked, check this one
-        setCheckedBoxes([...checkedBoxes, id]);
+        setGame(game =>
+            ({
+              ...game,
+              winners: [...game.winners, player],
+              points: {
+                ...game.points,
+                [player]: game.points[game.winners[0]] // All points for the winners should be the same, if a new one gets added
+              }
+            }))
       } else {
         // If two checkboxes are already checked, uncheck the first one and check this one
-        setCheckedBoxes([checkedBoxes[1], id]);
+        setGame(game =>
+            ({
+              ...game,
+              winners: [...game.winners, player]
+            }))
       }
     }
   };
@@ -139,25 +159,25 @@ const GameCreate = () => {
         label='Re'
         name='radioGroup'
         value={Winner.RE}
-        checked={(game.winnerTeam === Winner.RE)}
+        checked={(game.winningTeam === Winner.RE)}
         onChange={handleChange}
     />
     <Radio
         label='Contra'
         name='radioGroup'
         value={Winner.CONTRA}
-        checked={game.winnerTeam === Winner.CONTRA}
+        checked={game.winningTeam === Winner.CONTRA}
         onChange={handleChange}
     />
     <Header as={"h2"}>Winning Players:</Header>
     {game.players.map((player, id) => <Checkbox
         key={id}
         label={findPlayer(player).username}
-        checked={checkedBoxes.includes(id)}
-        onChange={() => handleCheckboxChange(id)}
+        checked={game.winners.includes(player)}
+        onChange={() => handleCheckboxChange(player)}
     />)}
 
-    {checkedBoxes.length !== 0 ? <Container>
+    {game.winners.length !== 0 ? <Container>
       <Header as={"h2"}>Punkte</Header>
       <Button onClick={() => updatePoints(-1)} icon={'minus'}/>
       <Label>{game.points[game.winners[0]]}</Label>

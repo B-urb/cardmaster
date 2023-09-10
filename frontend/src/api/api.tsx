@@ -18,7 +18,11 @@ export async function getSessions(id: string): Promise<GameSession[]> {
 }
 
 export async function updateGame(game: Game) {
-  return await instance.post(UPDATE_GAME, {id: game.id, points: game.points, fines: game.fines})
+  return await instance.post(UPDATE_GAME,
+      {
+        id: game.id, points: game.points, fines: game.fines,
+        winners: game.winners, winningTeam: game.winningTeam
+      })
 }
 
 export async function getSession(id: string): Promise<GameSession> {
