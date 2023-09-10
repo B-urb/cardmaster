@@ -2,6 +2,9 @@ val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
 val surrealdbVersion: String by project
+val prometeus_version: String by project
+
+var viteProcess: Process? = null
 
 
 plugins {
@@ -40,7 +43,13 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-html-builder-jvm:$ktor_version")
     implementation("org.jetbrains:kotlin-css-jvm:1.0.0-pre.129-kotlin-1.4.20")
-    implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
+    implementation("io.ktor:ktor-server-cio-jvm")
+    implementation("io.ktor:ktor-server-call-logging-jvm")
+    implementation("io.ktor:ktor-server-call-id-jvm")
+    implementation("io.ktor:ktor-server-metrics-jvm")
+    implementation("io.ktor:ktor-server-core-jvm")
+    implementation("io.ktor:ktor-server-metrics-micrometer-jvm")
+    implementation("io.micrometer:micrometer-registry-prometheus:$prometeus_version")
     //Injection
     implementation("io.insert-koin:koin-ktor:3.4.1")
     // https://mvnrepository.com/artifact/io.insert-koin/koin-logger-slf4j
@@ -67,6 +76,26 @@ tasks.wrapper {
     // the full version (with sources and documentation) of Gradle (ALL)
     distributionType = Wrapper.DistributionType.ALL
 }
+
+tasks.register("startVite") {
+    doLast {
+        val processBuilder = ProcessBuilder("npm", "run", "dev")
+        processBuilder.directory(File("frontend"))
+        viteProcess = processBuilder.start()
+
+        // Add shutdown hook to terminate the Vite process when JVM exits
+        Runtime.getRuntime().addShutdownHook(Thread {
+            viteProcess?.destroy()
+        })
+    }
+}
+tasks.named("run") {
+    dependsOn("startVite")
+}
+
+
+
+
 
 tasks.compileKotlin {
     kotlinOptions {

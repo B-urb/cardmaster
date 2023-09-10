@@ -8,13 +8,9 @@ import com.cardmaster.plugins.configureSecurity
 import com.cardmaster.plugins.configureSerialization
 import com.cardmaster.plugins.configureTemplating
 import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 
-fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
-
+fun main(args: Array<String>) {
+    io.ktor.server.cio.EngineMain.main(args)
 }
 
 data class Game(
@@ -22,6 +18,7 @@ data class Game(
 )
 
 fun Application.module() {
+    println(environment.config.property("ktor.db.password"))
     configureInjection()
     configureSecurity()
     configureMonitoring()

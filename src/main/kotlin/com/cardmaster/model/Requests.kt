@@ -1,5 +1,6 @@
 package com.cardmaster.model
 
+import com.cardmaster.util.WinnerSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,13 +10,18 @@ data class GroupParams(val name: String)
 data class IdParams(val id: String)
 
 @Serializable
-data class GameUpdate(val id: String, val points: Map<String, Int>, val fines: Map<String, Int>)
+data class GameUpdate(
+    val id: String,
+    val points: Map<String, Int>,
+    val fines: Map<String, Int>,
+    val winners: Set<String>,
+    @Serializable(with = WinnerSerializer::class)
+    val winningTeam: DoppelkopfWinner
+)
 
 
 @Serializable
 data class UserSparse(val id: String, val username: String)
-@Serializable
-data class JoinParams(val playerId: String, val groupId: String)
 
 @Serializable
 data class JoinParamsName(val username: String, val groupId: String)

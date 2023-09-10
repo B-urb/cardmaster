@@ -153,7 +153,12 @@ class CardMasterService : KoinComponent {
 
     fun updateGame(game: GameUpdate) {
         val savedGame = dbClient.driver.select(game.id, Game::class.java).first()
-        val updateGame = savedGame.copy(fines = game.fines, points = game.points)
+        val updateGame = savedGame.copy(
+            fines = game.fines,
+            points = game.points,
+            winningTeam = game.winningTeam,
+            winners = game.winners
+        )
         dbClient.driver.update(game.id, updateGame)
     }
 

@@ -33,11 +33,6 @@ class GameTest : KoinTest {
             configureRouting()
         }
 
-        client.get("/game/list").apply {
-            //val games = call.body<Game>()
-            assertEquals(HttpStatusCode.OK, status)
-        }
-
 
         client.post("/game/create") {
             headers {

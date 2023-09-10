@@ -7,6 +7,9 @@
   <logger level="INFO" name="org.eclipse.jetty"/>
   <logger level="INFO" name="io.netty"/>
   <logger level="INFO" name="org.java_websocket"/>
+  <logger level="OFF" name="io.micrometer"/>
+  <logger level="OFF" name="com.codahale.metrics"/>
+  <logger level="OFF" name="metrics-logger-reporter-1-thread-1"/>
   <root level="TRACE">
     <appender-ref ref="STDOUT"/>
   </root>
