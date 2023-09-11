@@ -1,0 +1,3 @@
+config:
+  cardmaster:namespace: cardmaster
+  cardmaster:replicas: "1"

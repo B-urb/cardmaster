@@ -1,0 +1,5 @@
+name: cardmaster
+runtime: nodejs
+description: Doppelkopf App
+config:
+  url: cardmaster.burban.me

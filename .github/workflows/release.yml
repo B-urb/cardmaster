@@ -1,0 +1,96 @@
+name: Deploy Release
+on:
+  push:
+    branches:
+      - 'v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+'
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+'
+env:
+  CI: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: development
+    container: node:18
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          CI_DIRECTUS_TOKEN: ${{ secrets.CI_DIRECTUS_TOKEN }}
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: production-artifacts
+          path: |
+            .next/standalone/
+            public/
+            .next/static/
+
+  build-docker:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: production-artifacts
+
+      - name: Set up Docker Build
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/webcv:${{ env.BRANCH_NAME }}
+
+  pulumi-deploy:
+    needs: build-docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - run: npm install
+        working-directory: deploy
+      - name: Decode kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d >  $HOME/.kube/config
+          cat $HOME/.kube/config
+        shell: bash
+      - name: Deploy with Pulumi
+        uses: pulumi/actions@v4
+        with:
+          command: up
+          stack-name: dev
+          work-dir: deploy
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      registryImage: ${{ secrets.DOCKERHUB_USERNAME }}/webcv
+      imageTag: ${{ github.head_ref || github.ref_name }}
