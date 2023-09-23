@@ -1,7 +1,7 @@
 import {Button, Form, Segment} from "semantic-ui-react";
 import {useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
-import {checkLogin, login} from "./api/api.tsx";
+import React, {useEffect, useState} from "react";
+import {checkLogin, login} from "./api/api";
 import {HttpStatusCode} from "axios";
 
 
@@ -18,18 +18,18 @@ const Login = () => {
     password: '',
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
     setFormData({
       ...formData,
       [name]: value
     });
   };
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const {data} = await login(
+      await login(
           {
             username: formData.username,
             password: formData.password,

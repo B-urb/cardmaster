@@ -1,7 +1,7 @@
-import SessionsOverview from "./SessionsOverview.tsx";
+import SessionsOverview from "./SessionsOverview";
 import {useParams} from "react-router-dom";
 import {Button, Divider, Form, Grid, Header, List, ListItem, Segment} from "semantic-ui-react";
-import instance, {CREATE_SESSION, GET_GROUP_USERS, JOIN_USER_TO_GROUP} from "./constants.ts";
+import instance, {CREATE_SESSION, GET_GROUP_USERS, JOIN_USER_TO_GROUP} from "./constants";
 import {useMutation, useQuery, useQueryClient} from "react-query";
 import {useState} from "react";
 

@@ -2,7 +2,7 @@ import {useMutation, useQuery, useQueryClient} from "react-query";
 import {Button, Form, Header, List, Segment} from "semantic-ui-react";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {createGroup, getGroups} from "./api/api.tsx";
+import {createGroup, getGroups} from "./api/api";
 
 
 const Groups = () => {

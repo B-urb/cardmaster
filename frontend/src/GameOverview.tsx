@@ -1,7 +1,7 @@
 import {Container, Header, Icon, Label, Menu, Table} from "semantic-ui-react";
 import {useQuery} from "react-query";
 import {useNavigate} from "react-router-dom";
-import {getGames, getUsersForSession} from "./api/api.tsx";
+import {getGames, getUsersForSession} from "./api/api";
 
 const GameOverview = (props: { id: string }) => {
 

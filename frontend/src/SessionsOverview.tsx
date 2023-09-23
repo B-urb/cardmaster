@@ -1,7 +1,7 @@
 import {Container, Header, List} from "semantic-ui-react";
 import {useQuery} from "react-query";
 import {useNavigate} from "react-router-dom";
-import {getSessions} from "./api/api.tsx";
+import {getSessions} from "./api/api";
 
 function toGermanDate(dateString: string) {
   const dateObj = new Date(dateString);

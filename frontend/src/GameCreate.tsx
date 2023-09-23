@@ -2,8 +2,8 @@ import {Button, ButtonGroup, Checkbox, Container, Divider, Header, Label, Radio,
 import React, {FormEvent, useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {useMutation, useQuery, useQueryClient} from "react-query";
-import {getGame, getUsersForSession, updateGame} from "./api/api.tsx";
-import {Winner} from "./types/Types.ts";
+import {getGame, getUsersForSession, updateGame} from "./api/api";
+import {Winner} from "./types/Types";
 
 function createEmptyFromPlayers(players: Array<string>) {
   return players.reduce((accumulator, user) => {
@@ -12,12 +12,18 @@ function createEmptyFromPlayers(players: Array<string>) {
   }, {} as Record<string, number>);
 }
 
-const PointGroup = ({playerId, points, update}) => <ButtonGroup>
-
-  <Button onClick={() => update(playerId, -1)} icon={'minus'}/>
-  <Label>{points}</Label>
-  <Button onClick={() => update(playerId, 1)} icon={'plus'}/>
-</ButtonGroup>
+type PointGroupProps = {
+  playerId: string;
+  points: number;
+  update: (playerId: string, value: number) => void;
+};
+const PointGroup: React.FC<PointGroupProps> = ({playerId, points, update}) => (
+    <ButtonGroup>
+      <Button onClick={() => update(playerId, -1)} icon={'minus'}/>
+      <Label>{points}</Label>
+      <Button onClick={() => update(playerId, 1)} icon={'plus'}/>
+    </ButtonGroup>
+);
 
 const GameCreate = () => {
   const params = useParams()
@@ -27,7 +33,7 @@ const GameCreate = () => {
   const queryClient = useQueryClient()
   if (sessionId === undefined) return <div>No SessionId</div>
   if (gameId === undefined) return <div>No GameId</div>
-  const {status, data} = useQuery<Game, Error>([gameId, gameId], () => getGame(gameId))
+  const {data} = useQuery<Game, Error>([gameId, gameId], () => getGame(gameId))
   const userQuery = useQuery<User[]>(["Users", sessionId], () => getUsersForSession(sessionId))
 
   const initPlayers: Array<string> = []
@@ -41,7 +47,6 @@ const GameCreate = () => {
     fines: createEmptyFromPlayers(initPlayers)
   }
   const [game, setGame] = useState(initGame); // Initialize game as null
-  const [checkedBoxes, setCheckedBoxes] = useState([]);
   useEffect(() => {
     if (data) {
       const fines = data.fines

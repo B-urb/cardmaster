@@ -1,7 +1,7 @@
 import {Button, Form, Segment} from "semantic-ui-react";
 import React, {useState} from "react";
 import {useNavigate,} from "react-router-dom";
-import {register} from "./api/api.tsx";
+import {register} from "./api/api";
 
 
 const Register = () => {
@@ -21,7 +21,7 @@ const Register = () => {
       [name]: value
     });
   };
-  const handleSubmit = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Basic validation for password confirmation
