@@ -18,7 +18,6 @@ data class Game(
 )
 
 fun Application.module() {
-    println(environment.config.property("ktor.db.password"))
     configureInjection()
     configureSecurity()
     configureMonitoring()
