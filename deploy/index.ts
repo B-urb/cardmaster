@@ -46,8 +46,8 @@ const surrealSecret = new Secret(resourceName, {
     namespace: k8sNamespace
   },
   stringData: {
-    "surreal-user": config.getSecret("surreal-user"),
-    "surreal-password": config.getSecret("surreal-password")
+    "surreal-user": config.getSecret("surreal-user")!,
+    "surreal-password": config.getSecret("surreal-password")!
   }
 })
 
