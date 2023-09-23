@@ -58,7 +58,7 @@ jobs:
         with:
           name: production-artifacts
           path: |
-            build
+            build/
   build-docker:
     needs: build
     runs-on: ubuntu-latest
