@@ -43,7 +43,7 @@ const secret = createGitlabSecret("pulumi", pullSecret, "gitlab-pull-secret", we
 const surrealSecret = new Secret(resourceName, {
   metadata: {
     name: resourceName,
-    namespace: k8sNamespace
+    namespace: webServerNs.metadata.namespace
   },
   stringData: {
     "surreal-user": config.getSecret("surreal-user")!,
@@ -88,11 +88,11 @@ const deployment = new Deployment(resourceName, {
               },
               {
                 "name": "SURREAL_USER",
-                valueFrom: {secretKeyRef: {name: secret.metadata.name, key: "surreal-user"}}
+                valueFrom: {secretKeyRef: {name: surrealSecret.metadata.name, key: "surreal-user"}}
               },
               {
                 "name": "SURREAL_PASSWORD",
-                valueFrom: {secretKeyRef: {name: secret.metadata.name, key: "surreal-password"}}
+                valueFrom: {secretKeyRef: {name: surrealSecret.metadata.name, key: "surreal-password"}}
               }
 
             ],
