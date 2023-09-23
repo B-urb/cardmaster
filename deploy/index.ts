@@ -40,10 +40,11 @@ const ingressAnnotation = stackName === "prod" ? {} : basicAuthAnnotation
 //Create Gitlab Secret
 const pullSecret = process.env.CI_PULL_SECRET!
 const secret = createGitlabSecret("pulumi", pullSecret, "gitlab-pull-secret", webServerNs)
+
 const surrealSecret = new Secret(resourceName, {
   metadata: {
     name: resourceName,
-    namespace: webServerNs.metadata.namespace
+    namespace: resourceName
   },
   stringData: {
     "surreal-user": config.getSecret("surreal-user")!,
