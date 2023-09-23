@@ -39,4 +39,4 @@ out/
 
 
 secrets.conf
-../src/main/resources/dist
+src/main/resources/dist
