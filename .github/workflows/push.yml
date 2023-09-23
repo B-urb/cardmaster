@@ -18,11 +18,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: development
-    container: node:18
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
       - name: Cache node modules
         uses: actions/cache@v3
         with:
@@ -30,24 +32,28 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+      - name: Run build with Gradle Wrapper
+        run: ./gradlew build
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build
+        working-directory: frontend
         run: npm run build
         env:
           CI_DIRECTUS_TOKEN: ${{ secrets.CI_DIRECTUS_TOKEN }}
+      - name: Copy Frontend distributable
+        run: cp -r frontend/dist src/resources
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
           name: production-artifacts
           path: |
-            .next/standalone/
-            public/
-            .next/static/
-
+            build
   build-docker:
     needs: build
     runs-on: ubuntu-latest
