@@ -103,5 +103,5 @@ jobs:
           work-dir: deploy
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      registryImage: ${{ secrets.DOCKERHUB_USERNAME }}/webcv
+      registryImage: ${{ secrets.DOCKERHUB_USERNAME }}/cardmaster
       imageTag: ${{ github.head_ref || github.ref_name }}
