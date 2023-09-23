@@ -41,6 +41,7 @@ jobs:
         with:
           gradle-version: 8.2.1
       - name: Install dependencies
+        working-directory: frontend
         run: npm ci
       - name: Build
         working-directory: frontend
