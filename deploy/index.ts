@@ -84,7 +84,7 @@ const deployment = new Deployment(resourceName, {
                 "value": url
               },
               {
-                "name": "SURREAL_CONNECTION_STRING",
+                "name": "SURREAL_HOST",
                 "value": "surrealdb.surrealdb"
               },
               {
