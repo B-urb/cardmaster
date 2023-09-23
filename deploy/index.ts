@@ -100,7 +100,7 @@ const deployment = new Deployment(resourceName, {
             "ports": [
               {
                 "name": "http",
-                "containerPort": 3000
+                "containerPort": 8080
               }
             ]
           }
