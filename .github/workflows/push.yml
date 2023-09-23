@@ -105,7 +105,7 @@ jobs:
         with:
           node-version: 18
       - name: Install dependencies
-        run: npm install -g @saithodev/semantic-release-backmerge @semantic-release/github @semantic-release/exec
+        run: npm install -g @semantic-release/exec @saithodev/semantic-release-backmerge @semantic-release/github
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
