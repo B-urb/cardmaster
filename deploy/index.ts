@@ -5,6 +5,7 @@ import {createGitlabSecret} from "./src/util";
 import {basicAuthAnnotation} from "./src/globals";
 import {Ingress} from "@pulumi/kubernetes/networking/v1";
 import {Deployment} from "@pulumi/kubernetes/apps/v1";
+import {Secret} from "@pulumi/kubernetes/core/v1";
 
 // Get some values from the stack configuration, or use defaults
 const config = new pulumi.Config();
@@ -39,6 +40,16 @@ const ingressAnnotation = stackName === "prod" ? {} : basicAuthAnnotation
 //Create Gitlab Secret
 const pullSecret = process.env.CI_PULL_SECRET!
 const secret = createGitlabSecret("pulumi", pullSecret, "gitlab-pull-secret", webServerNs)
+const surrealSecret = new Secret(resourceName, {
+  metadata: {
+    name: resourceName,
+    namespace: k8sNamespace
+  },
+  stringData: {
+    "surreal-user": config.getSecret("surreal-user"),
+    "surreal-password": config.getSecret("surreal-password")
+  }
+})
 
 
 // Create a new Deployment with a user-specified number of replicas
@@ -71,6 +82,19 @@ const deployment = new Deployment(resourceName, {
                 "name": "url",
                 "value": url
               },
+              {
+                "name": "SURREAL_CONNECTION_STRING",
+                "value": "surrealdb.surrealdb"
+              },
+              {
+                "name": "SURREAL_USER",
+                valueFrom: {secretKeyRef: {name: secret.metadata.name, key: "surreal-user"}}
+              },
+              {
+                "name": "SURREAL_PASSWORD",
+                valueFrom: {secretKeyRef: {name: secret.metadata.name, key: "surreal-password"}}
+              }
+
             ],
             "ports": [
               {

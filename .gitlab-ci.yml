@@ -1,0 +1,144 @@
+cache:
+  paths:
+    - node_modules/
+
+before_script:
+  - CI=true npm install
+
+stages:
+  - build
+  - build-docker
+  - deploy
+  - release
+
+
+.build:
+  image: node:18
+  stage: build
+
+  script:
+    - CI=true npm run build
+  artifacts:
+    paths:
+      - .next/standalone/
+      - public/
+      - .next/static/
+
+build:dev:
+  extends: .build
+  environment:
+    name: development
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "development" || $CI_COMMIT_TAG =~ /v[0-9]+\.[0-9]+\.[0-9]+\-rc.[0-9]+$/'
+      when: always
+    - when: never
+
+build:prod:
+  extends: .build
+  environment:
+    name: production
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
+      when: always
+    - when: never
+
+build-docker:
+  before_script:
+    - echo "pass"
+    - echo $CI_COMMIT_TAG
+  stage: build-docker
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [ "" ]
+  script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "development" || $CI_COMMIT_TAG
+      when: always
+    - if: $CI_MERGE_REQUEST_ID
+      when: never
+    - when: manual
+
+release:
+  image: node:18 # Requires GIT
+  stage: release
+  allow_failure: true
+  rules:
+    # allow creating releases from master branch and mastertenance branches named like this:
+    # `MAJOR.MINOR.PATCH`, e.g. `1.16.2`
+    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^[0-9]+(\.([0-9]+|x))?\.x$/'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "development"'
+      when: on_success
+    - when: never
+  script:
+    - npm install @semantic-release/gitlab@11.0.1 @semantic-release/exec @saithodev/semantic-release-backmerge
+    - npx semantic-release
+
+
+.deploy:
+  image:
+    name: pulumi/pulumi:3.69.0
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  stage: deploy
+  variables:
+    imageTag: $CI_COMMIT_TAG
+    registryImage: $CI_REGISTRY_IMAGE
+  script:
+    - cd deploy
+    - npm ci
+    - pulumi stack select bjoern_urban_5/cardmaster/${STAGE}
+    - pulumi update --skip-preview
+  # Create an artifact archive with just the pulumi log file,
+  # which is created using console-redirection in run-pulumi.sh.
+  artifacts:
+    paths:
+      - pulumi-log.txt
+    # This is just a sample of how artifacts can be expired (removed) automatically in GitLab.
+    # You may choose to not set this at all based on your organization's or team's preference.
+    expire_in: 1 week
+  # This job should only be created if the pipeline is created for the master branch.
+
+
+deploy:dev:
+  extends: .deploy
+  environment:
+    name: development
+  variables:
+    STAGE: dev
+  rules:
+    - if: $CI_COMMIT_TAG =~ /v[0-9]+\.[0-9]+\.[0-9]+\-rc.[0-9]+$/
+      when: always
+    - if: $CI_MERGE_REQUEST_ID
+      when: never
+
+deploy:prod:
+  extends: .deploy
+  environment:
+    name: production
+  variables:
+    STAGE: prod
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
+      when: always
+
+
+
+pulumi-preview:
+  image:
+    name: pulumi/pulumi:3.69.0
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  stage: deploy
+  script:
+    - cd deploy
+    - npm ci
+    - pulumi stack select bjoern_urban_5/cardmaster/dev
+    - pulumi preview
+  rules:
+    - if: $CI_COMMIT_TAG == null
+      when: always

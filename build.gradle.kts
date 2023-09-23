@@ -6,13 +6,11 @@ val prometeus_version: String by project
 
 var viteProcess: Process? = null
 
-
 plugins {
     kotlin("jvm") version "1.9.0"
     id("io.ktor.plugin") version "2.3.2"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
 }
-
 
 group = "com.cardmaster"
 version = "0.0.1"
@@ -20,9 +18,7 @@ application {
     mainClass.set("com.cardmaster.ApplicationKt")
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
-
 }
-
 
 repositories {
     mavenCentral()
@@ -50,17 +46,16 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-metrics-micrometer-jvm")
     implementation("io.micrometer:micrometer-registry-prometheus:$prometeus_version")
-    //Injection
+    // Injection
     implementation("io.insert-koin:koin-ktor:3.4.1")
     // https://mvnrepository.com/artifact/io.insert-koin/koin-logger-slf4j
 
     implementation("io.insert-koin:koin-logger-slf4j:3.4.1")
 
-    //Database Surreal DB
+    // Database Surreal DB
     implementation("com.surrealdb:surrealdb-driver:$surrealdbVersion")
-    //SurrealDB java needs Java websockets
+    // SurrealDB java needs Java websockets
     implementation("org.java-websocket:Java-WebSocket:1.5.4")
-
 
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
@@ -68,7 +63,6 @@ dependencies {
     testImplementation("io.insert-koin:koin-test:3.4.1")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
-
 
 tasks.wrapper {
     gradleVersion = "8.2.1"
@@ -84,22 +78,30 @@ tasks.register("startVite") {
         viteProcess = processBuilder.start()
 
         // Add shutdown hook to terminate the Vite process when JVM exits
-        Runtime.getRuntime().addShutdownHook(Thread {
-            viteProcess?.destroy()
-        })
+        Runtime.getRuntime().addShutdownHook(
+            Thread {
+                viteProcess?.destroy()
+            },
+        )
     }
+}
+tasks.register("buildFrontend") {
+    doLast {
+        exec {
+            commandLine("npm", "run", "build")
+            workingDir("frontend")
+        }
+    }
+}
+tasks.named("build") {
+    dependsOn("buildFrontend")
 }
 tasks.named("run") {
     dependsOn("startVite")
 }
-
-
-
-
 
 tasks.compileKotlin {
     kotlinOptions {
         jvmTarget = "17"
     }
 }
-
