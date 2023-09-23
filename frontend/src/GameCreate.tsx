@@ -73,10 +73,10 @@ const GameCreate = () => {
     },
   })
 
-  const findPlayer = (findUser: string): User => {
+  const findPlayer = (findUser: string): User | undefined => {
     if (userQuery.data)
       return userQuery.data.find((user) => user.id == findUser)
-    else return {username: "User not found"}
+    else return undefined
   }
 
   const updatePoints = (delta: number) => {
@@ -107,7 +107,6 @@ const GameCreate = () => {
 
   }
   const handleChange = (e: FormEvent<HTMLInputElement>, {value}) => {
-    console.log(value)
     setGame(game =>
         ({
           ...game,
@@ -177,7 +176,7 @@ const GameCreate = () => {
     <Header as={"h2"}>Winning Players:</Header>
     {game.players.map((player, id) => <Checkbox
         key={id}
-        label={findPlayer(player).username}
+        label={findPlayer(player)!.username}
         checked={game.winners.includes(player)}
         onChange={() => handleCheckboxChange(player)}
     />)}
