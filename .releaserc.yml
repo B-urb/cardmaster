@@ -9,8 +9,6 @@ plugins:
       backmergeStrategy: merge
       fastForwardMode: no-ff
       message: "chore(release): Preparations for next release [skip ci]"
-  - - "@semantic-release/npm"
-    - npmPublish: false
   - - "@semantic-release/exec"
     - verifyReleaseCmd: "echo ${nextRelease.version} > VERSION.txt"
   - "@semantic-release/github"
