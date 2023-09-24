@@ -45,7 +45,7 @@ fun Routing.sessionRoutes() {
             //Get Players that sit in the group
             val result = cardMasterService.createSession(
                 GameSession(
-                    "",
+                    null,
                     emptySet(),
                     players,
                     id.id,

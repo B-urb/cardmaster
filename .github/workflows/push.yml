@@ -45,7 +45,7 @@ jobs:
         run: npm ci
       - name: Build
         working-directory: frontend
-        run: npx vite build #FIXME: replace when tsc is fixed
+        run: npm run build
         env:
           CI_DIRECTUS_TOKEN: ${{ secrets.CI_DIRECTUS_TOKEN }}
       - name: Copy Frontend distributable

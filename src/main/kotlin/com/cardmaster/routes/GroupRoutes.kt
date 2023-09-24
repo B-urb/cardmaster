@@ -21,7 +21,7 @@ fun Routing.groupRoutes() {
         post("create") {
             val userId = call.sessions.get<UserSession>()!!.userId
             val group = call.receive<GroupParams>()
-            val playerGroup = PlayerGroup("", group.name)
+            val playerGroup = PlayerGroup(null, group.name)
             val groupCreated = cardMasterService.createGroup(playerGroup)
 
             val rel = cardMasterService.joinUserToGroup(userId, groupCreated.id!!)

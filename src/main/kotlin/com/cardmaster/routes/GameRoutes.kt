@@ -49,7 +49,7 @@ fun Routing.gameRoutes() {
 
             //FIXME: use actual users
             val game = Game(
-                "",
+                null,
                 session = id.id,
                 players = users.toSet(),
                 fines = fines,
