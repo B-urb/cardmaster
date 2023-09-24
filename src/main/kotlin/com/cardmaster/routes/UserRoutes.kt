@@ -20,7 +20,7 @@ fun Routing.userRoutes() {
 
     post("register") {
         val register = call.receive<RegisterData>()
-        val user = User("", register.username, register.email, register.password, emptySet())
+        val user = User(null, register.username, register.email, register.password, emptySet())
         val userCreated = cardMasterService.createUser(user)
         call.respond(userCreated!!)
     }
