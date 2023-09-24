@@ -1,4 +1,15 @@
-import {Button, ButtonGroup, Checkbox, Container, Divider, Header, Label, Radio, Segment} from "semantic-ui-react"
+import {
+  Button,
+  ButtonGroup,
+  Checkbox,
+  CheckboxProps,
+  Container,
+  Divider,
+  Header,
+  Label,
+  Radio,
+  Segment
+} from "semantic-ui-react"
 import React, {FormEvent, useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {useMutation, useQuery, useQueryClient} from "react-query";
@@ -106,7 +117,7 @@ const GameCreate = () => {
     mutation.mutate(game)
 
   }
-  const handleChange = (e: FormEvent<HTMLInputElement>, {value}) => {
+  const handleChange = (_: FormEvent<HTMLInputElement>, {value}: CheckboxProps) => {
     setGame(game =>
         ({
           ...game,
@@ -114,7 +125,7 @@ const GameCreate = () => {
         }))
   }
 
-  const handleCheckboxChange = (player) => {
+  const handleCheckboxChange = (player: string) => {
     if (game.winners.includes(player)) {
       // If the checkbox is already checked, uncheck it
       setGame(game =>
@@ -153,7 +164,7 @@ const GameCreate = () => {
     <Header as={"h2"}>Strafen</Header>
     {game.players.map((player: string, id) =>
         <Container key={id}>
-          <Label>{findPlayer(player).username}</Label>
+          <Label>{findPlayer(player)!.username}</Label>
           <PointGroup playerId={player} points={game.fines[player]} update={updateFines}/>
         </Container>
     )}
