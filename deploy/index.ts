@@ -40,14 +40,15 @@ const ingressAnnotation = stackName === "prod" ? {} : basicAuthAnnotation
 //Create Gitlab Secret
 const pullSecret = process.env.CI_PULL_SECRET!
 const secret = createGitlabSecret("pulumi", pullSecret, "gitlab-pull-secret", webServerNs)
+
 const surrealSecret = new Secret(resourceName, {
   metadata: {
     name: resourceName,
-    namespace: k8sNamespace
+    namespace: resourceName
   },
   stringData: {
-    "surreal-user": config.getSecret("surreal-user"),
-    "surreal-password": config.getSecret("surreal-password")
+    "surreal-user": config.getSecret("surreal-user")!,
+    "surreal-password": config.getSecret("surreal-password")!
   }
 })
 
@@ -83,23 +84,23 @@ const deployment = new Deployment(resourceName, {
                 "value": url
               },
               {
-                "name": "SURREAL_CONNECTION_STRING",
+                "name": "SURREAL_HOST",
                 "value": "surrealdb.surrealdb"
               },
               {
                 "name": "SURREAL_USER",
-                valueFrom: {secretKeyRef: {name: secret.metadata.name, key: "surreal-user"}}
+                valueFrom: {secretKeyRef: {name: surrealSecret.metadata.name, key: "surreal-user"}}
               },
               {
                 "name": "SURREAL_PASSWORD",
-                valueFrom: {secretKeyRef: {name: secret.metadata.name, key: "surreal-password"}}
+                valueFrom: {secretKeyRef: {name: surrealSecret.metadata.name, key: "surreal-password"}}
               }
 
             ],
             "ports": [
               {
                 "name": "http",
-                "containerPort": 3000
+                "containerPort": 8080
               }
             ]
           }

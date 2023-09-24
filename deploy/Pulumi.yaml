@@ -3,3 +3,6 @@ runtime: nodejs
 description: Doppelkopf App
 config:
   url: cardmaster.burban.me
+  namespace: cardmaster
+
+

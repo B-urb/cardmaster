@@ -1,0 +1,5 @@
+config:
+  cardmaster:surreal-password:
+    secure: AAABAMqcBu20dXSgXIn8vte3ORuMTMXPFflh/BnNnfciPPLGqO11hcsB7aL4bX76
+  cardmaster:surreal-user:
+    secure: AAABACJVcx29Jn6iC96rD1fv4LhcIxqTL5t8NNf/R41QkMF8ES8avreI

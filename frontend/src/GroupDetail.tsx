@@ -20,7 +20,7 @@ async function getUsersForGroup(groupId: string): Promise<User[]> {
 
 const GroupDetail = () => {
   const params = useParams()
-  const groupId = params["groupId"]
+  const groupId = params["groupId"] !== undefined ? params["groupId"] : "No group Id"
   const [player, setPlayer] = useState("")
   const queryClient = useQueryClient()
 

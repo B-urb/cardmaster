@@ -9,7 +9,15 @@ import org.koin.logger.slf4jLogger
 
 val dbModule = module {
     val config = ConfigFactory.load()
-    single<SurrealDatabase> { SurrealDatabase(config.getString("ktor.db.password"), "root", "club", "cardmaster") }
+    single<SurrealDatabase> {
+        SurrealDatabase(
+            config.getString("ktor.db.password"),
+            config.getString("ktor.db.username"),
+            config.getString("ktor.db.host"),
+            "club",
+            "cardmaster",
+        )
+    }
 }
 val serviceModule = module {
     single<CardMasterService> {

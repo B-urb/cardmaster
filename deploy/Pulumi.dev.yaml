@@ -1,3 +1,7 @@
 config:
   cardmaster:namespace: cardmaster
   cardmaster:replicas: "1"
+  cardmaster:surreal-password:
+    secure: AAABABknF9HQjh96N6IbMQp6TBWMVorE7WymJta9aacf4IUfzR17HN1aD2/3J863
+  cardmaster:surreal-user:
+    secure: AAABAHeGNea7Uvyt35iQsphKQmJjdH+9vUecWWM2EDENiKug94qtca9F
