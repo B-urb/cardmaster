@@ -1,12 +1,15 @@
-import {Button, Form, Segment} from "semantic-ui-react";
+import {Button, Form, Message, Segment} from "semantic-ui-react";
 import React, {useState} from "react";
 import {useNavigate,} from "react-router-dom";
 import {register} from "./api/api";
+import {AxiosError} from "axios";
 
 
 const Register = () => {
   const navigate = useNavigate()
 
+
+  const [error, setError] = useState("")
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -39,8 +42,9 @@ const Register = () => {
             confirmPassword: formData.confirmPassword
           })
       navigate("/login")
-    } catch (error) {
-      console.error('There was an error:', error);
+    } catch (error: any) {
+      const e = error as AxiosError
+      e.response === undefined ? setError(e.message) : setError(e.response.data as string);
     }
   };
   return <Segment>
@@ -67,6 +71,7 @@ const Register = () => {
                   required/>
       <Button>Register</Button>
     </Form>
+    {error.length !== 0 ? <Message size='massive'>{error}</Message> : null}
   </Segment>
 }
 

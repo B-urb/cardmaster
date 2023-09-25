@@ -35,7 +35,6 @@ export const instance = axios.create({
   headers: {
     "Access-Control-Allow-Origin": "*",
     "Content-Type": "application/json",
-    "cardmaster-user": "user:lhxwr5fi4p17z4ggtpy0",
   },
   withCredentials: true
 });

@@ -1,8 +1,8 @@
-import {Button, Form, Segment} from "semantic-ui-react";
+import {Button, Form, Message, Segment} from "semantic-ui-react";
 import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {checkLogin, login} from "./api/api";
-import {HttpStatusCode} from "axios";
+import {AxiosError, HttpStatusCode} from "axios";
 
 
 const Login = () => {
@@ -12,6 +12,7 @@ const Login = () => {
     checkLogin().then(code => code === HttpStatusCode.Ok ? navigate("/group") : void (0))
   }, []);
 
+  const [error, setError] = useState("")
 
   const [formData, setFormData] = useState({
     username: '',
@@ -35,8 +36,9 @@ const Login = () => {
             password: formData.password,
           })
       navigate("/group")
-    } catch (error) {
-      console.error('There was an error:', error);
+    } catch (error: any) {
+      const e = error as AxiosError
+      e.response === undefined ? setError(e.message) : setError(e.response.data as string);
     }
   };
   return <Segment>
@@ -53,6 +55,7 @@ const Login = () => {
                   required/>
       <Button>Login</Button>
     </Form>
+    {error.length !== 0 ? <Message size='massive'>{error}</Message> : null}
   </Segment>
 
 }
