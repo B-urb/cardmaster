@@ -7,6 +7,8 @@ import com.cardmaster.model.PlayerGroup
 import com.cardmaster.model.User
 import com.cardmaster.model.UserSparse
 import com.cardmaster.plugins.SurrealDatabase
+import com.cardmaster.util.UserAlreadyExistsException
+import com.cardmaster.util.UserNotFoundException
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.LocalDateTime
@@ -60,12 +62,18 @@ class CardMasterService : KoinComponent {
     }
 
     fun createUser(user: User): User? {
-        val hash = dbClient.driver.query(
-            "SELECT * FROM crypto::scrypt::generate('${user.password}')",
-            emptyMap(), String::class.java
-        ).first().result.first()
-        val persistUser = user.copy(password = hash)
-        return dbClient.driver.create("user:rand()", persistUser)
+        if (dbClient.driver.query("SELECT * from user where mail = '${user.mail}'", emptyMap(), User::class.java)
+                .isEmpty()
+        ) {
+            throw UserAlreadyExistsException(user.mail)
+        } else {
+            val hash = dbClient.driver.query(
+                "SELECT * FROM crypto::scrypt::generate('${user.password}')",
+                emptyMap(), String::class.java
+            ).first().result.first()
+            val persistUser = user.copy(password = hash)
+            return dbClient.driver.create("user:rand()", persistUser)
+        }
     }
 
     fun login(user: User): String {
@@ -74,13 +82,14 @@ class CardMasterService : KoinComponent {
                 "SELECT * from user where username = '${user.username}'",
                 emptyMap(),
                 User::class.java
-            ).first().result.first()
-                ?: throw NoSuchElementException("User not found")
+            )
+        if (savedUser.first().result.isEmpty()) throw UserNotFoundException(user.username)
+        val queryUser = savedUser.first().result.first()
         val passwordCorrect = dbClient.driver.query(
-            "SELECT * FROM crypto::scrypt::compare('${savedUser.password}','${user.password}')",
+            "SELECT * FROM crypto::scrypt::compare('${queryUser.password}','${user.password}')",
             emptyMap(), String::class.java
         ).first().result.first()
-        if (passwordCorrect.toBoolean()) return savedUser.id!! else throw IllegalStateException("Password check failed")
+        if (passwordCorrect.toBoolean()) return queryUser.id!! else throw IllegalStateException("Password check failed")
     }
 
     fun createGroup(group: PlayerGroup): PlayerGroup {
