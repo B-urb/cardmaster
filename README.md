@@ -11,7 +11,7 @@ This tool is designed to work as a point tracker for the card game doppelkopf.
 ## Tech Stack
 
 - Kotlin/Ktor
-- Svelte
+- React
 - SurrealDB
 - Kubernetes
 - Pulumi
