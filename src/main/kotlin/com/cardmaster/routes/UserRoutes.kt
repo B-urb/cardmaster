@@ -32,8 +32,15 @@ fun Routing.userRoutes() {
         call.respond("Successfully logged in")
     }
     get("loginc") {
-        println("test")
-        if (call.sessions.get<UserSession>() != null) call.respond(HttpStatusCode.OK) else call.respond(HttpStatusCode.Unauthorized)
+        if (call.sessions.get<UserSession>() != null) {
+            call.respond(HttpStatusCode.OK)
+        } else {
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+    }
+    get("logout") {
+        call.sessions.clear<UserSession>()
+        call.respond("Logged out")
     }
 
     route("user") {
