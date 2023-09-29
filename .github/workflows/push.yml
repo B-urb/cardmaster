@@ -46,8 +46,6 @@ jobs:
       - name: Build
         working-directory: frontend
         run: npm run build
-        env:
-          CI_DIRECTUS_TOKEN: ${{ secrets.CI_DIRECTUS_TOKEN }}
       - name: Copy Frontend distributable
         run: cp -r frontend/dist src/main/resources
       - name: Run build with Gradle Wrapper
