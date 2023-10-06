@@ -21,6 +21,9 @@ data class GameUpdate(
 
 
 @Serializable
+data class LoggedIn(val isLoggedIn: Boolean)
+
+@Serializable
 data class UserSparse(val id: String, val username: String)
 
 @Serializable
