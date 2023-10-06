@@ -1,6 +1,6 @@
 import './App.css'
 import {Button, Header} from "semantic-ui-react";
-import {Outlet, Route, Routes} from "react-router-dom";
+import {Outlet, Route, Routes, useNavigate} from "react-router-dom";
 import Groups from "./Groups";
 import GroupDetail from "./GroupDetail";
 import SessionDetail from "./SessionDetail";
@@ -9,14 +9,29 @@ import Login from "./Login";
 import Register from "./Register";
 import EntryPage from "./EntryPage";
 import NotFound from "./NotFound.tsx";
-import instance from "./constants.ts";
+import {checkLogin, handleLogout} from "./api/api.ts";
+import {useMutation, useQuery, useQueryClient} from "react-query";
+import {AxiosError} from "axios";
 
 function App() {
+  const {data,} = useQuery<LoggedIn, AxiosError>("LoggedIn", checkLogin)
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
+
+  const mutation = useMutation(handleLogout, {
+    // Optional: onSuccess callback if you want to perform any actions after successful mutation
+    onSuccess: () => {
+      // For example, you can invalidate and refetch something after a mutation
+      queryClient.invalidateQueries("LoggedIn").then((_) =>
+          navigate("/")
+      )
+    },
+  })
   return (
       <>
         <Header as={"h1"}>Cardmaster</Header>
-        <Button onClick={() => instance.get("/logout")}>Logout</Button>
+        {data !== undefined && data.isLoggedIn ? <Button onClick={() => mutation.mutate()}>Logout</Button> : null}
         <Routes>
           <Route path={"/"} element={<EntryPage/>}/>
           <Route path="login" element={<Login/>}/>

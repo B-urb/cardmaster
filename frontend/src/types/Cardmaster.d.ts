@@ -3,6 +3,10 @@ type map = {
   [key: string]: number
 }
 
+interface LoggedIn {
+  isLoggedIn: Boolean
+}
+
 interface Game {
   id: string
   sessionId: string
