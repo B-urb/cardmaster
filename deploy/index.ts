@@ -2,7 +2,6 @@ import * as pulumi from "@pulumi/pulumi";
 import {getProject, getStack, interpolate} from "@pulumi/pulumi";
 import * as kubernetes from "@pulumi/kubernetes";
 import {createGitlabSecret} from "./src/util";
-import {basicAuthAnnotation} from "./src/globals";
 import {Ingress} from "@pulumi/kubernetes/networking/v1";
 import {Deployment} from "@pulumi/kubernetes/apps/v1";
 import {Secret} from "@pulumi/kubernetes/core/v1";
@@ -32,7 +31,7 @@ const webServerNs = new kubernetes.core.v1.Namespace(resourceName, {
   }
 });
 
-const ingressAnnotation = stackName === "prod" ? {} : basicAuthAnnotation
+const ingressAnnotation = {} //stackName === "prod" ? {} : basicAuthAnnotation
 
 // Create a new ConfigMap for the Nginx configuration
 
