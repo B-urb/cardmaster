@@ -8,6 +8,7 @@ import {checkLogin} from "./api/api.ts";
 const EntryPage = () => {
   const navigate = useNavigate()
   const {data} = useQuery<LoggedIn, AxiosError>("LoggedIn", checkLogin)
+ console.log(data)
 
   return <Container>
     {data !== undefined && data.isLoggedIn ?

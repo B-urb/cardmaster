@@ -14,6 +14,7 @@ const Login = () => {
 
   useEffect(() => {
     if (!isLoading) {
+      console.log(data)
       if (data !== undefined && data.isLoggedIn) {
         navigate("/group")
       }
