@@ -31,7 +31,7 @@ export const JOIN_SESSION = "/session/join"
 
 
 export const instance = axios.create({
-  baseURL: 'http://localhost:8080/',
+  baseURL: import.meta.env.VITE_BASE_URL || undefined,
   headers: {
     "Access-Control-Allow-Origin": "*",
     "Content-Type": "application/json",

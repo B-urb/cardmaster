@@ -1,11 +1,11 @@
 package com.cardmaster.routes
 
+import com.cardmaster.model.LoggedIn
 import com.cardmaster.model.LoginData
 import com.cardmaster.model.RegisterData
 import com.cardmaster.model.User
 import com.cardmaster.model.UserSession
 import com.cardmaster.service.CardMasterService
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -33,9 +33,9 @@ fun Routing.userRoutes() {
     }
     get("loginc") {
         if (call.sessions.get<UserSession>() != null) {
-            call.respond(HttpStatusCode.OK)
+            call.respond(LoggedIn(true))
         } else {
-            call.respond(HttpStatusCode.Unauthorized)
+            call.respond(LoggedIn(false))
         }
     }
     get("logout") {

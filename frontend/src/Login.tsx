@@ -2,17 +2,27 @@ import {Button, Form, Message, Segment} from "semantic-ui-react";
 import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {checkLogin, login} from "./api/api";
-import {AxiosError, HttpStatusCode} from "axios";
+import {AxiosError} from "axios";
+import {useQuery, useQueryClient} from "react-query";
 
 
 const Login = () => {
+  const {data, isLoading} = useQuery<LoggedIn, Error>("LoggedIn", checkLogin)
+  const queryClient = useQueryClient()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    checkLogin().then(code => code === HttpStatusCode.Ok ? navigate("/group") : void (0))
-  }, []);
 
-  const [error, setError] = useState("")
+  useEffect(() => {
+    if (!isLoading) {
+      console.log(data)
+      if (data !== undefined && data.isLoggedIn) {
+        navigate("/group")
+      }
+    }
+  }, [data, isLoading]);
+
+
+  const [errorMessage, setErrorMessage] = useState("")
 
   const [formData, setFormData] = useState({
     username: '',
@@ -35,10 +45,12 @@ const Login = () => {
             username: formData.username,
             password: formData.password,
           })
-      navigate("/group")
+      queryClient.invalidateQueries("LoggedIn").then(
+          () => navigate("/group")
+      )
     } catch (error: any) {
       const e = error as AxiosError
-      e.response === undefined ? setError(e.message) : setError(e.response.data as string);
+      e.response === undefined ? setErrorMessage(e.message) : setErrorMessage(e.response.data as string);
     }
   };
   return <Segment>
@@ -55,7 +67,7 @@ const Login = () => {
                   required/>
       <Button>Login</Button>
     </Form>
-    {error.length !== 0 ? <Message size='massive'>{error}</Message> : null}
+    {errorMessage.length !== 0 ? <Message size='massive'>{errorMessage}</Message> : null}
   </Segment>
 
 }

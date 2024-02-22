@@ -3,6 +3,7 @@ package com.cardmaster.routes
 import com.cardmaster.model.GroupParams
 import com.cardmaster.model.JoinParamsName
 import com.cardmaster.model.PlayerGroup
+import com.cardmaster.model.User
 import com.cardmaster.model.UserSession
 import com.cardmaster.service.CardMasterService
 import io.ktor.http.*
@@ -43,8 +44,8 @@ fun Routing.groupRoutes() {
 
         get("{userId") {
             val user = call.sessions.get<UserSession>()!!.userId
-                val groups = cardMasterService.getGroupsOfUser(call.parameters["userId"]!!)
-                call.respond(groups)
+            val groups = cardMasterService.getGroupsOfUser(call.parameters["userId"]!!)
+            call.respond(groups)
         }
 
 
@@ -54,7 +55,18 @@ fun Routing.groupRoutes() {
             //FIXME: Use Relationship when api is available
             val result =
                 cardMasterService.joinUserToGroupByName(data.username, data.groupId)
-            call.respond(HttpStatusCode.OK)
+            //if result is null user does not exist and we want to create a temp user instead
+            if (result == null) {
+                val unregisteredUser = User(null, data.username, "", "")
+                val user = cardMasterService.createUser(unregisteredUser)
+                if (user == null) {
+                    call.respond(HttpStatusCode.InternalServerError)
+                } else {
+                    cardMasterService.joinUserToGroup(user.id!!, data.groupId)
+                    call.respond(message = "Created Temp User")
+                }
+            }
+            call.respond(message = "Successfully joined User")
         }
 
     }

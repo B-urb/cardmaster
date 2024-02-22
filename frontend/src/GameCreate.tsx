@@ -4,7 +4,7 @@ import {
   Checkbox,
   CheckboxProps,
   Container,
-  Divider,
+  Divider, Grid,
   Header,
   Label,
   Radio,
@@ -31,7 +31,7 @@ type PointGroupProps = {
 const PointGroup: React.FC<PointGroupProps> = ({playerId, points, update}) => (
     <ButtonGroup>
       <Button onClick={() => update(playerId, -1)} icon={'minus'}/>
-      <Label>{points}</Label>
+      <Label size={"huge"}>{points}</Label>
       <Button onClick={() => update(playerId, 1)} icon={'plus'}/>
     </ButtonGroup>
 );
@@ -164,41 +164,61 @@ const GameCreate = () => {
     <Header as={"h2"}>Strafen</Header>
     {game.players.map((player: string, id) =>
         <Container key={id}>
-          <Label>{findPlayer(player)!.username}</Label>
+          <Grid centered celled={"internally"} columns={2}>
+            <Grid.Row>
+              <Grid.Column width={2}>
+          <Label size={"huge"}>{findPlayer(player)!.username}</Label>
+              </Grid.Column>
+              <Grid.Column width={3}>
           <PointGroup playerId={player} points={game.fines[player]} update={updateFines}/>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
         </Container>
     )}
     <Divider/>
     <Header as={"h2"}>Gewinner</Header>
+    <Grid columns={2}>
+      <Grid.Column>
     <Radio
+        fitted
+        toggle
         label='Re'
         name='radioGroup'
         value={Winner.RE}
         checked={(game.winningTeam === Winner.RE)}
         onChange={handleChange}
-    />
-    <Radio
+    /></Grid.Column>
+    <Grid.Column><Radio
+        fitted
+        toggle
         label='Contra'
         name='radioGroup'
         value={Winner.CONTRA}
         checked={game.winningTeam === Winner.CONTRA}
         onChange={handleChange}
     />
+    </Grid.Column>
+    </Grid>
     <Header as={"h2"}>Winning Players:</Header>
+    <Grid centered>
     {game.players.map((player, id) => <Checkbox
         key={id}
         label={findPlayer(player)!.username}
         checked={game.winners.includes(player)}
         onChange={() => handleCheckboxChange(player)}
     />)}
-
+    </Grid>
     {game.winners.length !== 0 ? <Container>
       <Header as={"h2"}>Punkte</Header>
+      <ButtonGroup>
       <Button onClick={() => updatePoints(-1)} icon={'minus'}/>
-      <Label>{game.points[game.winners[0]]}</Label>
+      <Label size={"huge"}>{game.points[game.winners[0]]}</Label>
       <Button onClick={() => updatePoints(1)} icon={'plus'}/>
+      </ButtonGroup>
     </Container> : <div/>
     }
+    <Divider/>
 
 
     <Button onClick={handleUpdate}>Save</Button>

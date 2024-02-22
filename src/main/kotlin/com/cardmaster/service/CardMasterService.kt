@@ -96,11 +96,17 @@ class CardMasterService : KoinComponent {
         return dbClient.driver.create("group:rand()", group)
     }
 
-    fun joinUserToGroupByName(username: String, groupId: String) {
+    fun joinUserToGroupByName(username: String, groupId: String) : String? {
         val playerId =
             dbClient.driver.query("select id from user where username = '$username'", emptyMap(), Map::class.java)
-                .first().result.first().get("id")
+                .firstOrNull()?.result?.firstOrNull()?.get("id")
+        if(playerId == null) {
+            return null
+        }
+        else {
         joinUserToGroup(playerId as String, groupId)
+        }
+        return playerId
     }
 
     fun joinUserToGroup(playerId: String, groupId: String) {

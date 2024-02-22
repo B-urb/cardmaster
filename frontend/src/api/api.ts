@@ -35,9 +35,10 @@ export async function getSession(id: string): Promise<GameSession> {
   }
 }
 
-export async function checkLogin() {
-  const response = await instance.get("loginc")
-  return response.status
+export async function checkLogin(): Promise<LoggedIn> {
+  const response = await instance.get<LoggedIn>("loginc")
+  return response.data
+
 }
 
 export async function getGame(id: string): Promise<Game> {
@@ -66,6 +67,9 @@ export async function createGroup(name: string) {
   return await instance.post(CREATE_GROUP, {"name": name})
 }
 
+export async function handleLogout() {
+  return await instance.get("/logout")
+}
 export async function login(data: LoginData) {
   return await instance.post(LOGIN, data)
 }

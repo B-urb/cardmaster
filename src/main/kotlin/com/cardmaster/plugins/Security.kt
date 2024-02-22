@@ -33,21 +33,21 @@ fun Application.configureSecurity() {
             cookie.extensions["SameSite"] = "lax"
         }
     }
-    routing {
-        authenticate("auth-oauth-google") {
-            get("login") {
-                call.respondRedirect("/callback")
-            }
-
-            get("/callback") {
-                val principal: OAuthAccessTokenResponse.OAuth2? = call.authentication.principal()
-                call.sessions.set(UserOauthSession(principal?.accessToken.toString()))
-                call.respondRedirect("/hello")
-            }
-        }
-        get("/session/increment") {
-        }
-    }
+//    routing {
+//        authenticate("auth-oauth-google") {
+//            get("login") {
+//                call.respondRedirect("/callback")
+//            }
+//
+//            get("/callback") {
+//                val principal: OAuthAccessTokenResponse.OAuth2? = call.authentication.principal()
+//                call.sessions.set(UserOauthSession(principal?.accessToken.toString()))
+//                call.respondRedirect("/hello")
+//            }
+//        }
+//        get("/session/increment") {
+//        }
+//    }
 }
 
 class UserOauthSession(accessToken: String)
