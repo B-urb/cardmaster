@@ -48,7 +48,7 @@ jobs:
         run: ./gradlew buildFatJar
 
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: production-artifacts
           path: |
@@ -63,7 +63,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: production-artifacts
       - name: Set up Docker Build
