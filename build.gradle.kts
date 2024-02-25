@@ -99,8 +99,3 @@ tasks.named("run") {
     dependsOn("startVite")
 }
 
-tasks.compileKotlin {
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-}
