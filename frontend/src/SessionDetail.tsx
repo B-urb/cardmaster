@@ -1,7 +1,7 @@
 import GameOverview from "./GameOverview";
 import {Button, Container} from "semantic-ui-react";
 import {useNavigate, useParams} from "react-router-dom";
-import {useMutation, useQueryClient} from "react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {startGame} from "./api/api";
 
 const SessionDetail = () => {

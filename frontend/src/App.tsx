@@ -10,20 +10,21 @@ import Register from "./Register";
 import EntryPage from "./EntryPage";
 import NotFound from "./NotFound.tsx";
 import {checkLogin, handleLogout} from "./api/api.ts";
-import {useMutation, useQuery, useQueryClient} from "react-query";
 import {AxiosError} from "axios";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
 function App() {
-  const {data,} = useQuery<LoggedIn, AxiosError>("LoggedIn", checkLogin)
+  const {data,} = useQuery<LoggedIn, AxiosError>({queryKey: ["LoggedIn"], queryFn: checkLogin})
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
 
-  const mutation = useMutation(handleLogout, {
+  const mutation = useMutation({
+    mutationFn: handleLogout,
     // Optional: onSuccess callback if you want to perform any actions after successful mutation
     onSuccess: () => {
       // For example, you can invalidate and refetch something after a mutation
-      queryClient.invalidateQueries("LoggedIn").then((_) =>
+      queryClient.invalidateQueries({queryKey: ["LoggedIn"]}).then((_) =>
           navigate("/")
       )
     },
