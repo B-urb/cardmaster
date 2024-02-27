@@ -10,13 +10,14 @@ const SessionDetail = () => {
   const sessionId = params["sessionId"]
   const queryClient = useQueryClient()
 
-  const mutation = useMutation(startGame, {
+  const mutation = useMutation({
+    mutationFn: startGame,
     // Optional: onSuccess callback if you want to perform any actions after successful mutation
     onSuccess: (data) => {
       const game: Game = data.data
       console.log(game)
       // For example, you can invalidate and refetch something after a mutation
-      queryClient.invalidateQueries("Games");
+      queryClient.invalidateQueries({queryKey: ["Games"]});
       navigate(`game/${game.id}`)
     },
   })
