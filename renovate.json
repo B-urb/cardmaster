@@ -8,15 +8,17 @@
   ],
   "packageRules": [
     {
-      "matchPackagePatterns": [
-        "*"
-      ],
       "matchUpdateTypes": [
-        "minor",
+        "minor"
+      ],
+      "groupName": "all minor updates",
+      "groupSlug": "all-minor"
+    },
+    {
+      "matchUpdateTypes": [
         "patch"
       ],
-      "groupName": "all non-major dependencies",
-      "groupSlug": "all-minor-patch"
+      "automerge": true
     }
   ]
 }
