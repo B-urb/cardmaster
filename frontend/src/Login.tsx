@@ -3,11 +3,11 @@ import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {checkLogin, login} from "./api/api";
 import {AxiosError} from "axios";
-import {useQuery, useQueryClient} from "react-query";
+import {useQuery, useQueryClient} from "@tanstack/react-query";
 
 
 const Login = () => {
-  const {data, isLoading} = useQuery<LoggedIn, Error>("LoggedIn", checkLogin)
+  const {data, isLoading} = useQuery<LoggedIn, Error>({queryKey: ["LoggedIn"], queryFn: checkLogin})
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
@@ -45,7 +45,7 @@ const Login = () => {
             username: formData.username,
             password: formData.password,
           })
-      queryClient.invalidateQueries("LoggedIn").then(
+      queryClient.invalidateQueries({queryKey: ["LoggedIn"]}).then(
           () => navigate("/group")
       )
     } catch (error: any) {

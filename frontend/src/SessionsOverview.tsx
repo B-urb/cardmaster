@@ -1,5 +1,5 @@
 import {Container, Header, List} from "semantic-ui-react";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {useNavigate} from "react-router-dom";
 import {getSessions} from "./api/api";
 
@@ -16,10 +16,13 @@ function toGermanDate(dateString: string) {
 }
 const SessionsOverview = (props: { id: string }) => {
   const navigate = useNavigate()
-  const {status, data, error} = useQuery<GameSession[], Error>(["Sessions", props.id], () => getSessions(props.id))
+  const {status, data, error} = useQuery<GameSession[], Error>({
+    queryKey: ["Sessions", props.id],
+    queryFn: () => getSessions(props.id)
+  })
 
-  return <Container>{status === 'idle' && <div>idle</div>}
-    {status === 'loading' && <span>Loading...</span>}
+  return <Container>
+    {status === 'pending' && <span>Loading...</span>}
     {status === 'error' && <span>Error: {error?.message}</span>}
     {status === 'success' && data && Object.keys(data).length > 0 && (
 

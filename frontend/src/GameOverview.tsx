@@ -1,5 +1,5 @@
 import {Container, Icon, Label, Menu, Segment, Table} from "semantic-ui-react";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {useNavigate} from "react-router-dom";
 import {getGames, getUsersForSession} from "./api/api";
 
@@ -8,8 +8,11 @@ const GameOverview = (props: { id: string }) => {
   const navigate = useNavigate()
 
   // Queries
-  const {status, data, error} = useQuery<Game[], Error>(["Games", props.id], () => getGames(props.id))
-  const userQuery = useQuery<User[]>(["Users", props.id], () => getUsersForSession(props.id))
+  const {status, data, error} = useQuery<Game[], Error>({
+    queryKey: ["Games", props.id],
+    queryFn: () => getGames(props.id)
+  })
+  const userQuery = useQuery<User[]>({queryKey: ["Users", props.id], queryFn: () => getUsersForSession(props.id)})
 
   function calculatePointsForUser(playerId: string) {
     return data!.reduce((current, game) => {
@@ -24,8 +27,7 @@ const GameOverview = (props: { id: string }) => {
   }
 
   return <Container>
-    {status === 'idle' && <div>idle</div>}
-    {status === 'loading' && <span>Loading...</span>}
+    {status === 'pending' && <span>Loading...</span>}
     {status === 'error' && <span>Error: {error?.message}</span>}
     {status === 'success' && data && userQuery.data && Object.keys(data).length > 0 && (
         <Table celled>

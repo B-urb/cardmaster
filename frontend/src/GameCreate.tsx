@@ -4,7 +4,8 @@ import {
   Checkbox,
   CheckboxProps,
   Container,
-  Divider, Grid,
+  Divider,
+  Grid,
   Header,
   Label,
   Radio,
@@ -12,7 +13,7 @@ import {
 } from "semantic-ui-react"
 import React, {FormEvent, useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import {useMutation, useQuery, useQueryClient} from "react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {getGame, getUsersForSession, updateGame} from "./api/api";
 import {Winner} from "./types/Types";
 
@@ -44,8 +45,8 @@ const GameCreate = () => {
   const queryClient = useQueryClient()
   if (sessionId === undefined) return <div>No SessionId</div>
   if (gameId === undefined) return <div>No GameId</div>
-  const {data} = useQuery<Game, Error>([gameId, gameId], () => getGame(gameId))
-  const userQuery = useQuery<User[]>(["Users", sessionId], () => getUsersForSession(sessionId))
+  const {data} = useQuery<Game, Error>({queryKey: [gameId, gameId], queryFn: () => getGame(gameId)})
+  const userQuery = useQuery<User[]>({queryKey: ["Users", sessionId], queryFn: () => getUsersForSession(sessionId)})
 
   const initPlayers: Array<string> = []
   const initGame: Game = {
@@ -74,11 +75,12 @@ const GameCreate = () => {
     }
   }, [data]);
 
-  const mutation = useMutation(updateGame, {
+  const mutation = useMutation({
+    mutationFn: updateGame,
     // Optional: onSuccess callback if you want to perform any actions after successful mutation
     onSuccess: () => {
-      queryClient.invalidateQueries(gameId)
-      queryClient.invalidateQueries("Games")
+      queryClient.invalidateQueries({queryKey: [gameId]})
+      queryClient.invalidateQueries({queryKey: ["Games"]})
       navigate(-1)
       // For example, you can invalidate and refetch something after a mutation
     },

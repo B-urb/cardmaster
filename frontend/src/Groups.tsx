@@ -1,4 +1,4 @@
-import {useMutation, useQuery, useQueryClient} from "react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {Button, Form, Header, List, Segment} from "semantic-ui-react";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
@@ -10,19 +10,19 @@ const Groups = () => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
-  const {status, data, error} = useQuery<Group[], Error>("Groups", getGroups)
-  const mutation = useMutation(createGroup, {
+  const {status, data, error} = useQuery<Group[], Error>({queryKey: ["Groups"], queryFn: getGroups})
+  const mutation = useMutation({
+    mutationFn: createGroup,
     // Optional: onSuccess callback if you want to perform any actions after successful mutation
     onSuccess: () => {
       // For example, you can invalidate and refetch something after a mutation
-      queryClient.invalidateQueries("Groups");
+      queryClient.invalidateQueries({queryKey: ["Groups"]});
       setName("")
     },
   })
   return <Segment>
     <Header as='h2'>Meine Gruppen:</Header>
-    {status === 'idle' && <div>idle</div>}
-    {status === 'loading' && <span>Loading...</span>}
+    {status === 'pending' && <span>Loading...</span>}
     {status === 'error' && <span>Error: {error?.message}</span>}
     {status === 'success' && data && Object.keys(data).length > 0 && (
         <List link animated>

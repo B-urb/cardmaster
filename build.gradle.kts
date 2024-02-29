@@ -64,7 +64,7 @@ dependencies {
 }
 
 tasks.wrapper {
-    gradleVersion = "^4.0.0"
+    gradleVersion = "8.6"
     // You can either download the binary-only version of Gradle (BIN) or
     // the full version (with sources and documentation) of Gradle (ALL)
     distributionType = Wrapper.DistributionType.ALL
@@ -99,8 +99,3 @@ tasks.named("run") {
     dependsOn("startVite")
 }
 
-tasks.compileKotlin {
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-}

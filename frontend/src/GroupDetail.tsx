@@ -2,7 +2,7 @@ import SessionsOverview from "./SessionsOverview";
 import {useParams} from "react-router-dom";
 import {Button, Divider, Form, Grid, Header, List, ListItem, Segment} from "semantic-ui-react";
 import instance, {CREATE_SESSION, GET_GROUP_USERS, JOIN_USER_TO_GROUP} from "./constants";
-import {useMutation, useQuery, useQueryClient} from "react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {useState} from "react";
 
 async function startSession(groupId: string) {
@@ -24,20 +24,22 @@ const GroupDetail = () => {
   const [player, setPlayer] = useState("")
   const queryClient = useQueryClient()
 
-  const userQuery = useQuery<User[]>(["GroupUsers", groupId], () => getUsersForGroup(groupId))
+  const userQuery = useQuery<User[]>({queryKey: ["GroupUsers", groupId], queryFn: () => getUsersForGroup(groupId)})
 
-  const mutation = useMutation(startSession, {
+  const mutation = useMutation({
+    mutationFn: startSession,
     // Optional: onSuccess callback if you want to perform any actions after successful mutation
     onSuccess: () => {
       // For example, you can invalidate and refetch something after a mutation
-      queryClient.invalidateQueries("Sessions");
+      queryClient.invalidateQueries({queryKey: ["Sessions"]});
     },
   })
 
-  const addPlayerMutation = useMutation(addUserToGroup, {
+  const addPlayerMutation = useMutation({
+    mutationFn: addUserToGroup,
     // Optional: onSuccess callback if you want to perform any actions after successful mutation
     onSuccess: () => {
-      queryClient.invalidateQueries("GroupUsers")
+      queryClient.invalidateQueries({queryKey: ["GroupUsers"]})
       // For example, you can invalidate and refetch something after a mutation
     },
   })
