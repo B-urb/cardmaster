@@ -49,7 +49,7 @@ dependencies {
     implementation("io.insert-koin:koin-ktor:3.5.4")
     // https://mvnrepository.com/artifact/io.insert-koin/koin-logger-slf4j
 
-    implementation("io.insert-koin:koin-logger-slf4j:3.5.3")
+    implementation("io.insert-koin:koin-logger-slf4j:3.5.4")
 
     // Database Surreal DB
     implementation("com.surrealdb:surrealdb-driver:$surrealdbVersion")
