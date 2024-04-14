@@ -46,7 +46,7 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics-micrometer-jvm")
     implementation("io.micrometer:micrometer-registry-prometheus:$prometeus_version")
     // Injection
-    implementation("io.insert-koin:koin-ktor:3.5.4")
+    implementation("io.insert-koin:koin-ktor:3.5.6")
     // https://mvnrepository.com/artifact/io.insert-koin/koin-logger-slf4j
 
     implementation("io.insert-koin:koin-logger-slf4j:3.5.4")
