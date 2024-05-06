@@ -79,7 +79,7 @@ release:
 
 .deploy:
   image:
-    name: pulumi/pulumi:3.115.1
+    name: pulumi/pulumi:3.115.2
     entrypoint:
       - '/usr/bin/env'
       - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
@@ -129,7 +129,7 @@ deploy:prod:
 
 pulumi-preview:
   image:
-    name: pulumi/pulumi:3.115.1
+    name: pulumi/pulumi:3.115.2
     entrypoint:
       - '/usr/bin/env'
       - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
