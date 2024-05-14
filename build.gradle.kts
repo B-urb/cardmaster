@@ -7,9 +7,9 @@ val prometeus_version: String by project
 var viteProcess: Process? = null
 
 plugins {
-    kotlin("jvm") version "1.9.22"
-    id("io.ktor.plugin") version "2.3.8"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
+    kotlin("jvm") version "1.9.24"
+    id("io.ktor.plugin") version "2.3.11"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.24"
 }
 
 group = "com.cardmaster"
@@ -46,10 +46,10 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics-micrometer-jvm")
     implementation("io.micrometer:micrometer-registry-prometheus:$prometeus_version")
     // Injection
-    implementation("io.insert-koin:koin-ktor:3.5.3")
+    implementation("io.insert-koin:koin-ktor:3.5.6")
     // https://mvnrepository.com/artifact/io.insert-koin/koin-logger-slf4j
 
-    implementation("io.insert-koin:koin-logger-slf4j:3.5.3")
+    implementation("io.insert-koin:koin-logger-slf4j:3.5.6")
 
     // Database Surreal DB
     implementation("com.surrealdb:surrealdb-driver:$surrealdbVersion")
@@ -59,12 +59,12 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-    testImplementation("io.insert-koin:koin-test:3.5.3")
+    testImplementation("io.insert-koin:koin-test:3.5.6")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
 
 tasks.wrapper {
-    gradleVersion = "8.6"
+    gradleVersion = "8.7"
     // You can either download the binary-only version of Gradle (BIN) or
     // the full version (with sources and documentation) of Gradle (ALL)
     distributionType = Wrapper.DistributionType.ALL
