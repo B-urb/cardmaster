@@ -54,7 +54,7 @@ dependencies {
     // Database Surreal DB
     implementation("com.surrealdb:surrealdb-driver:$surrealdbVersion")
     // SurrealDB java needs Java websockets
-    implementation("org.java-websocket:Java-WebSocket:1.5.6")
+    implementation("org.java-websocket:Java-WebSocket:1.5.7")
 
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
