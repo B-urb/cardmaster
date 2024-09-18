@@ -59,7 +59,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-    testImplementation("io.insert-koin:koin-test:3.5.6")
+    testImplementation("io.insert-koin:koin-test:4.0.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
 
