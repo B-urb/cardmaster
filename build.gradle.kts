@@ -7,9 +7,9 @@ val prometeus_version: String by project
 var viteProcess: Process? = null
 
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.4.20"
     id("io.ktor.plugin") version "2.3.13"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.21"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.4.20"
 }
 
 group = "com.cardmaster"
@@ -46,20 +46,20 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics-micrometer-jvm")
     implementation("io.micrometer:micrometer-registry-prometheus:$prometeus_version")
     // Injection
-    implementation("io.insert-koin:koin-ktor:4.0.1")
+    implementation("io.insert-koin:koin-ktor:4.2.2")
     // https://mvnrepository.com/artifact/io.insert-koin/koin-logger-slf4j
 
-    implementation("io.insert-koin:koin-logger-slf4j:4.0.1")
+    implementation("io.insert-koin:koin-logger-slf4j:4.2.2")
 
     // Database Surreal DB
     implementation("com.surrealdb:surrealdb-driver:$surrealdbVersion")
     // SurrealDB java needs Java websockets
-    implementation("org.java-websocket:Java-WebSocket:1.5.7")
+    implementation("org.java-websocket:Java-WebSocket:1.6.0")
 
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-    testImplementation("io.insert-koin:koin-test:4.0.1")
+    testImplementation("io.insert-koin:koin-test:4.2.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
 
